@@ -1,0 +1,13 @@
+.user-searches {
+    min-height: 108px;
+}
+
+.bg-grey {
+    background: #c9cad9;
+}
+
+.bar {
+    color: #ffffff;
+    background: #c9cad9;
+    font-weight: 600;
+}

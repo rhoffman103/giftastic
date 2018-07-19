@@ -6,27 +6,43 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Gif-Tastic</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/style.css">
     </head>
     
     <body>
 
         <div class="container">
 
-            <div class="user-searches"></div>
+            <div class="user-searches bg-grey mb-4"></div>
 
-            <div class="row">
-                <div class="giffs col-md-8"> </div>
+            <div class="row mx-0 mb-4">
 
-                    <form class="col-md-4">
-                        <div class="form-group">
-                            <label for="search-topic">Add A Topic</label>
-                            <input type="text" class="form-control search-box" placeholder="Rick and Morty">
-                        </div>
-                        <button type="submit" class="btn btn-primary add-search">Search It!</button>
-                    </form>
-
+                <div class="card col-12 px-0">
+                    <div class="card-header bar">Find a Gif</div>
+                    <div class="card-body">
+                        <form>
+                            <div class="row">
+                                <div class="form-group col-sm-8">
+                                    <label for="search-topic">Add A Topic</label>
+                                    <input type="text" class="form-control search-box" placeholder="Rick and Morty">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="FormControlSelect1">Display</label>
+                                    <select class="form-control" id="ControlSelect">
+                                        <option>5</option>
+                                        <option>10</option>
+                                        <option>15</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary add-search">Search It!</button>
+                        </form>
+                    </div>
                 </div>
+
             </div>
+
+        </div>
 
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
         <script src="assets/javascript/app.js" type="text/javascript"></script>
