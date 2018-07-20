@@ -33,7 +33,11 @@ $(document).ready(function() {
                 var rating = result[index].rating;
                 var p = $("<p>").text(`Rating: ${rating}`);
                 var gif = $("<img>");
-                gif.attr("src", result[index].images.fixed_height.url);
+                gif.addClass("giffy");
+                gif.attr("src", result[index].images.fixed_height_still.url);
+                gif.attr("data-still", result[index].images.fixed_height_still.url);
+                gif.attr("data-animate", result[index].images.fixed_height.url)
+                gif.attr("data-state", "still");
             
                 gifDiv.prepend(p);
                 gifDiv.prepend(gif);
@@ -64,6 +68,19 @@ $(document).ready(function() {
         var keyword = $(this).attr("data-keyword");
         var limit = $("#ControlSelect").val();
         doSearch(keyword, limit);
+    });
+
+    $(document).on("click", ".giffy", function() {
+        var $this = $(this);
+        var state = $this.attr("data-state");
+
+        if (state === "still") {
+            $this.attr("src", $this.attr("data-animate"));
+            $this.attr("data-state", "animate");
+        } else {
+            $this.attr("src", $this.attr("data-still"));
+            $this.attr("data-state", "still");
+        }
     });
 
     renderButtons();
