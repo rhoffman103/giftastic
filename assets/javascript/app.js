@@ -1,23 +1,53 @@
 $(document).ready(function() {
 
-    var $searchBox = $(".search-box");
-    var $gifs = $(".gifs");
-    var apiKey = "Pp4Ne79GSqyRqQOyvOoHQbiAJK8sN839";  
-    var searches = ["rick and morty", "adult swim", "pickle rick", "poopybutthole", "birdperson", "rick sanchez", "morty smith",
-                    "squanchy", "summer smith", "gazorpian", "mulan sauce", "show me what you got", "wubba lubba dub dub"]; 
+    var currentKeyword;
+    var offset         = 0;
+    var $searchBox     = $(".search-box");
+    var $userSearches  = $(".user-searches");
+    var $gifs          = $(".gifs");
+    var $offset        = $(".offset");
+    var apiKey         = "Pp4Ne79GSqyRqQOyvOoHQbiAJK8sN839";  
+    var searches       = ["rick and morty", "adult swim", "pickle rick", "poopybutthole", "birdperson", "rick sanchez", "morty smith",
+                         "squanchy", "summer smith", "mulan sauce", "show me what you got", "wubba lubba dub dub"]; 
 
     const renderButtons = function() {
-        $(".user-searches").empty();
+        $userSearches.empty();
         $.each(searches, function(index, value) {
             var button = $("<button>").addClass("btn btn-primary mx-2 my-2 search-btn")
                 .attr("data-keyword", value)
                 .text(value);
-            $(".user-searches").append(button);
+            $userSearches.append(button);
         })
     };
 
-    const doSearch = function(keyword, limit) {
-        var queryURL = `https://api.giphy.com/v1/gifs/search?q=${encodeURIComponent(keyword)}&api_key=${apiKey}&limit=${limit}&rating=g`;
+    const renderOffsetButtons = function(limit) {
+        $offset.empty();
+        var options = ["<< Previous", "Next >>"]
+        
+        $.each(options, function(index, value) {
+            var offsetBtn = $("<button>").attr("type", "submit")
+                .addClass("btn btn-primary mx-2 my-2 offset-btn offset-btn-" + (index + 1))
+                .attr("data-offset", limit)
+                .text(value);
+            $offset.append(offsetBtn);
+        })
+    };
+
+    const getParameters = function(event, limit, offset = 0) {
+        var limit = $("#ControlSelect").val();
+        
+        if (event.target.attributes[0].value != "submit") {
+            currentKeyword = event.currentTarget.innerText;
+        }
+        else if ($searchBox === "") {
+            currentKeyword = $searchBox.val();
+        }
+
+        return [currentKeyword, limit, offset];
+    }
+
+    const doSearch = function(keyword, limit, offset = 0) {
+        var queryURL = `https://api.giphy.com/v1/gifs/search?q=${encodeURIComponent(keyword)}&api_key=${apiKey}&limit=${limit}&offset=${offset}&rating=g`;
 
         $.ajax({
             url: queryURL,
@@ -26,10 +56,10 @@ $(document).ready(function() {
         .then(function(response) {
             var result = response.data;
             $gifs.empty();
-            console.log(result[0]);
+            renderOffsetButtons(limit);
 
             $.each(result, function(index, value) {
-                var gifDiv = $("<div class='item float-left mr-4'>");
+                var gifDiv = $("<div class='item float-left mx-3'>");
                 var rating = result[index].rating;
                 var p = $("<p>").text(`Rating: ${rating}`);
                 var gif = $("<img>");
@@ -48,26 +78,28 @@ $(document).ready(function() {
 
     $(document).on("click", ".add-search", function(event) {
         event.preventDefault();
-        var keyword = $searchBox.val().trim();
-        if (keyword.length > 0) {
-            searches.push(keyword);
+        var parameters = getParameters(event);
+        console.log("add search");
+        
+        if (parameters[0].length > 0) {
+            searches.push(parameters[0]);
             $searchBox.val("");
             renderButtons();
-            var limit = $("#ControlSelect").val();;
-            doSearch(keyword, limit);
+            doSearch(parameters[0], parameters[1]);
         }
     });
 
     $(document).on("keypress", "button", function() {
         if (event.keyCode == 13) {
             $(".add-search").click()
+            console.log("keypress");
         };
     });
 
-    $(document).on("click", ".search-btn", function() {
-        var keyword = $(this).attr("data-keyword");
-        var limit = $("#ControlSelect").val();
-        doSearch(keyword, limit);
+    $(document).on("click", ".search-btn", function(event) {
+        var parameters = getParameters(event);
+        doSearch(parameters[0], parameters[1]);
+        console.log("search button");
     });
 
     $(document).on("click", ".giffy", function() {
@@ -82,6 +114,24 @@ $(document).ready(function() {
             $this.attr("data-state", "still");
         }
     });
+
+    $(document).on("click", ".offset-btn", function(event) {
+        var parameters = getParameters(event);
+        
+        if ($(this)[0].attributes[1].nodeValue.includes("offset-btn-1")) {
+            offset -= parseInt(parameters[1]);
+        } 
+        else {
+            offset += parseInt(parameters[1]);
+        }
+        doSearch(currentKeyword, parameters[1], offset);
+    })
+
+    // $("#ControlSelect").on("dblclick", function(event) {
+    //     var parameters = getParameters(event);
+    //     doSearch(parameters[0], parameters[1], parameters[2]);
+    //     console.log("click success");
+    // });
 
     renderButtons();
 
