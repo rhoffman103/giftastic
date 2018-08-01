@@ -36,14 +36,17 @@ $(document).ready(function() {
     const getParameters = function(event, limit, offset = 0) {
         var limit = $("#ControlSelect").val();
         
-        if (event.target.attributes[0].value != "submit") {
+            if (event.target.classList[4] === "search-btn") {
             currentKeyword = event.currentTarget.innerText;
+            console.log(currentKeyword)
         }
-        else if ($searchBox === "") {
+            else if ($searchBox.val().length > 0) {
             currentKeyword = $searchBox.val();
+            console.log(currentKeyword)
         }
-
+        
         return [currentKeyword, limit, offset];
+        
     }
 
     const doSearch = function(keyword, limit, offset = 0) {
@@ -127,11 +130,11 @@ $(document).ready(function() {
         doSearch(currentKeyword, parameters[1], offset);
     })
 
-    // $("#ControlSelect").on("dblclick", function(event) {
-    //     var parameters = getParameters(event);
-    //     doSearch(parameters[0], parameters[1], parameters[2]);
-    //     console.log("click success");
-    // });
+    $("#ControlSelect").change(function(event) {
+        var parameters = getParameters(event);
+        doSearch(currentKeyword, parameters[1], parameters[2]);
+        console.log("click success");
+    });
 
     renderButtons();
 
